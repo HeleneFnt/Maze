@@ -16,11 +16,12 @@ Goal Point G(4,2)
 
 startPosition = { x: 0, y: 0 }  
 goalPosition = { x: 4, y: 2 }  
+// Déplacement comme sur une carte géographique par convention 
 possibleMoves= [  
-  { x: 0, y: 1 },  // Droite  
-  { x: 1, y: 0 },  // Bas  
-  { x: 0, y: -1 }, // Gauche  
-  { x: -1, y: 0 }  // Haut   
+  { x: 0, y: 1 },  // Est  
+  { x: 1, y: 0 },  // Sud  
+  { x: 0, y: -1 }, // Ouest  
+  { x: -1, y: 0 }  // Nord   
   ]
   wall=0
   path=1

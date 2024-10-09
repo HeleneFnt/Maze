@@ -1,0 +1,25 @@
+/* Style pour le corps de la page */
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/Maze/img/maze_room25.webp');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    /* Ajuste cette valeur pour la transparence souhaitée */
+    z-index: -1;
+    /* Place l'image derrière le contenu */
+}
