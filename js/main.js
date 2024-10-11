@@ -2,7 +2,7 @@
 
 // Position de départ et d'arrivée
 let startPosition = { x: 0, y: 0 };   // donc position en haut à gauche
-let goalPosition = { x: 4, y: 2 };    // donc 5ème élément de x et 3eme élément de y
+let goalPosition = { x: 0, y: 2 };    // donc 5ème élément de x et 3eme élément de y
 let actualPosition = { ...startPosition };  // Faire une copie de la position de départ
 
 // Déplacements possibles : Sud, Est, Nord, Ouest
@@ -87,46 +87,49 @@ function isVisited(position) {
 
 // Trouver le chemin vers le goal
 function findPath() {
-    step++; // Incrémenter le nombre d'étapes
-    // console.log(`Step:${step}`)
+    // Initialiser la pile avec la position de départ
+    positionStack.push({ ...startPosition });
+    markAsVisited(startPosition);
 
-    // Si on est à la position finale
-    if (isGoal(actualPosition)) {
-        console.log(`Goal reached in ${step} steps`);
-        console.log(`Goal is ${actualPosition.x},${actualPosition.y}`)
-        return true;
-    }
+    // Boucle tant qu'il y a des positions dans la pile
+    while (positionStack.length > 0) {
+        let currentPosition = positionStack[positionStack.length - 1];  // Ne pas dépiler immédiatement
+        actualPosition = currentPosition;
+        step++;  // Incrémenter le nombre d'étapes
 
-    // Marquer la position actuelle comme visitée
-    markAsVisited(actualPosition);
+        // Si on est à la position finale
+        if (isGoal(actualPosition)) {
+            console.log(`Goal reached in ${step} steps`);
+            return true;
+        }
 
-    // Ajouter la position actuelle à la pile
-    positionStack.push({ ...actualPosition });
+        let moved = false;  // Indicateur pour savoir si on a bougé
 
-    // Tester les déplacements possibles (par ordre de priorité : Sud, Est, Nord, Ouest)
-    for (let move of possibleMoves) {
-        let newPosition = {
-            x: actualPosition.x + move.x,
-            y: actualPosition.y + move.y
-        };
+        // Tester les déplacements possibles (Sud, Est, Nord, Ouest)
+        for (let move of possibleMoves) {
+            let newPosition = {
+                x: actualPosition.x + move.x,
+                y: actualPosition.y + move.y
+            };
 
-        // Vérifier si la nouvelle position est dans le labyrinthe, n'est pas un mur et n'a pas encore été visitée
-        if (insideMaze(newPosition) && isPath(newPosition) && !isVisited(newPosition)) {
-            actualPosition = newPosition;  // Mettre à jour la position actuelle
-            console.log(`Step:${step} Moved to position: (${newPosition.x}, ${newPosition.y})`);
-
-            if (findPath()) {  // Continuer la recherche de manière récursive
-                return true;
+            // Vérifier si la nouvelle position est dans le labyrinthe, est un chemin, et n'a pas encore été visitée
+            if (insideMaze(newPosition) && isPath(newPosition) && !isVisited(newPosition)) {
+                markAsVisited(newPosition);  // Marquer la position comme visitée
+                positionStack.push(newPosition);  // Ajouter la nouvelle position à la pile
+                console.log(`Step:${step} Moved to position: (${newPosition.x}, ${newPosition.y})`);
+                moved = true;  // On a trouvé un chemin possible
+                break;  // Sortir de la boucle dès qu'un mouvement est possible
             }
         }
-    }
-    
 
-    // Si aucun chemin n'est trouvé, on fait demi-tour (backtracking)
-    console.log(`Step:${step} Backtracking from position: (${actualPosition.x}, ${actualPosition.y}) `);
-    positionStack.pop();  // Retirer la position actuelle de la pile
-    actualPosition = positionStack[positionStack.length - 1];  // Revenir à la dernière position valide
-    step++;
+        // Si aucun mouvement n'est possible, on fait demi-tour
+        if (!moved) {
+            console.log(`Step:${step} Backtracking from position: (${actualPosition.x}, ${actualPosition.y})`);
+            positionStack.pop();  // Retirer la position actuelle de la pile pour revenir en arrière
+        }
+    }
+
+    console.log("No path to the goal was found.");
     return false;
 }
 
